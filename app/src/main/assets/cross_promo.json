@@ -1,0 +1,8 @@
+[
+  {
+    "name": "BQ Sqwad AI",
+    "packageName": "com.bqsqwad.bqsqwadai",
+    "description": "More smart tools from BQ Sqwad Technologies",
+    "enabled": false
+  }
+]
