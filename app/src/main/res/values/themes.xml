@@ -3,6 +3,8 @@
     <style name="Theme.HowDoILook" parent="android:Theme.Material.Light.NoActionBar" />
     <style name="Theme.HowDoILook.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#0757D8</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimationDuration">180</item>
         <item name="postSplashScreenTheme">@style/Theme.HowDoILook</item>
     </style>
 </resources>
