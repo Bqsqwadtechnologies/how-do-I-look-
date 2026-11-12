@@ -1,21 +1,27 @@
 package com.bqsqwad.howdoilook.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.bqsqwad.howdoilook.feature.history.HistoryScreen
 import com.bqsqwad.howdoilook.feature.history.HistoryViewModel
 import com.bqsqwad.howdoilook.feature.home.HomeScreen
+import com.bqsqwad.howdoilook.feature.rating.CameraScreen
 import com.bqsqwad.howdoilook.feature.rating.RatingScreen
+import com.bqsqwad.howdoilook.feature.rating.RatingViewModel
 import com.bqsqwad.howdoilook.feature.settings.SettingsScreen
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 
 object Routes {
     const val HOME = "home"
     const val RATING = "rating"
+    const val CAMERA = "camera"
     const val HISTORY = "history"
     const val SETTINGS = "settings"
 }
@@ -38,10 +44,27 @@ fun AppNavHost() {
         }
 
         composable(Routes.RATING) {
+            val ratingVm: RatingViewModel = hiltViewModel()
             RatingScreen(
                 onBack = { navController.popBackStack() },
-                onOpenCamera = {
-                    // Camera screen can be added later; for now gallery is primary
+                onOpenCamera = { navController.navigate(Routes.CAMERA) },
+                viewModel = ratingVm
+            )
+        }
+
+        composable(Routes.CAMERA) {
+            // Share the same ViewModel scoped to the rating back-stack entry if possible;
+            // fallback: pop with URI via previous entry saved state.
+            val parentEntry = remember(navController) {
+                navController.getBackStackEntry(Routes.RATING)
+            }
+            val ratingVm: RatingViewModel = hiltViewModel(parentEntry)
+
+            CameraScreen(
+                onBack = { navController.popBackStack() },
+                onPhotoCaptured = { uri: Uri ->
+                    ratingVm.onPhotoSelected(uri)
+                    navController.popBackStack()
                 }
             )
         }
@@ -63,4 +86,9 @@ fun AppNavHost() {
             )
         }
     }
+}
+
+@Composable
+private fun <T> remember(key: T, calculation: () -> androidx.navigation.NavBackStackEntry): androidx.navigation.NavBackStackEntry {
+    return androidx.compose.runtime.remember(key) { calculation() }
 }
