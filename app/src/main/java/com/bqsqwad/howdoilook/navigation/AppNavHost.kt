@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bqsqwad.howdoilook.feature.history.HistoryScreen
 import com.bqsqwad.howdoilook.feature.history.HistoryViewModel
+import com.bqsqwad.howdoilook.feature.history.RatingDetailScreen
+import com.bqsqwad.howdoilook.feature.history.RatingDetailViewModel
 import com.bqsqwad.howdoilook.feature.home.HomeScreen
 import com.bqsqwad.howdoilook.feature.rating.CameraScreen
 import com.bqsqwad.howdoilook.feature.rating.RatingScreen
@@ -23,6 +25,9 @@ object Routes {
     const val CAMERA = "camera"
     const val HISTORY = "history"
     const val SETTINGS = "settings"
+    const val RATING_DETAIL = "rating_detail/{ratingId}"
+
+    fun ratingDetail(id: String) = "rating_detail/${Uri.encode(id)}"
 }
 
 @Composable
@@ -38,7 +43,7 @@ fun AppNavHost() {
                 onRateLook = { navController.navigate(Routes.RATING) },
                 onHistory = { navController.navigate(Routes.HISTORY) },
                 onSettings = { navController.navigate(Routes.SETTINGS) },
-                onRatingClick = { /* detail later */ }
+                onRatingClick = { rating -> navController.navigate(Routes.ratingDetail(rating.id)) }
             )
         }
 
@@ -72,8 +77,16 @@ fun AppNavHost() {
             HistoryScreen(
                 ratings = ratings,
                 onBack = { navController.popBackStack() },
-                onRatingClick = { /* detail */ },
+                onRatingClick = { rating -> navController.navigate(Routes.ratingDetail(rating.id)) },
                 onDelete = vm::delete
+            )
+        }
+
+        composable(Routes.RATING_DETAIL) {
+            val vm: RatingDetailViewModel = hiltViewModel()
+            RatingDetailScreen(
+                onBack = { navController.popBackStack() },
+                viewModel = vm
             )
         }
 
