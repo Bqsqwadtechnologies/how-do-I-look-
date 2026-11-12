@@ -18,6 +18,7 @@ import com.bqsqwad.howdoilook.feature.rating.CameraScreen
 import com.bqsqwad.howdoilook.feature.rating.RatingScreen
 import com.bqsqwad.howdoilook.feature.rating.RatingViewModel
 import com.bqsqwad.howdoilook.feature.settings.SettingsScreen
+import com.bqsqwad.howdoilook.feature.StyleStudioScreen
 
 object Routes {
     const val HOME = "home"
@@ -25,6 +26,7 @@ object Routes {
     const val CAMERA = "camera"
     const val HISTORY = "history"
     const val SETTINGS = "settings"
+    const val STYLE_STUDIO = "style_studio"
     const val RATING_DETAIL = "rating_detail/{ratingId}"
 
     fun ratingDetail(id: String) = "rating_detail/${Uri.encode(id)}"
@@ -43,6 +45,7 @@ fun AppNavHost() {
                 onRateLook = { navController.navigate(Routes.RATING) },
                 onHistory = { navController.navigate(Routes.HISTORY) },
                 onSettings = { navController.navigate(Routes.SETTINGS) },
+                onStyleStudio = { navController.navigate(Routes.STYLE_STUDIO) },
                 onRatingClick = { rating -> navController.navigate(Routes.ratingDetail(rating.id)) }
             )
         }
@@ -94,6 +97,10 @@ fun AppNavHost() {
             SettingsScreen(
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        composable(Routes.STYLE_STUDIO) {
+            StyleStudioScreen(onBack = { navController.popBackStack() })
         }
     }
 }
