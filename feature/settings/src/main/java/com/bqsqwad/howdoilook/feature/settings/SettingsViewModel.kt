@@ -16,7 +16,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val notificationsEnabled: StateFlow<Boolean> = preferences.notificationsEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val reduceMotion: StateFlow<Boolean> = preferences.reduceMotion
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
