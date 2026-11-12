@@ -38,7 +38,7 @@ import android.content.pm.PackageManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.bqsqwad.howdoilook.notifications.StyleReminderWorker
+import com.bqsqwad.howdoilook.feature.settings.StyleReminderWorker
 import java.util.concurrent.TimeUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
