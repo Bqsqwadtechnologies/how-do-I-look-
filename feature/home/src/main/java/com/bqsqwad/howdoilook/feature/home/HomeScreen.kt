@@ -102,7 +102,7 @@ fun HomeScreen(
                         Text(
                             "Simple photo-quality guidance for lighting, color, detail and framing. Your photo stays on your device.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.92f)
                         )
                         Spacer(Modifier.height(20.dp))
                         Button(
