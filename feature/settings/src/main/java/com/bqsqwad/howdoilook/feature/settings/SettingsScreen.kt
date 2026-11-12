@@ -37,7 +37,6 @@ fun SettingsScreen(
     onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val notifications by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
     val reduceMotion by viewModel.reduceMotion.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
@@ -68,11 +67,11 @@ fun SettingsScreen(
             Text("Preferences", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(12.dp))
 
-            SettingSwitch(
-                title = "Notifications",
-                subtitle = "Daily style tips and streak reminders",
-                checked = notifications,
-                onCheckedChange = viewModel::setNotifications
+            Text(
+                "Notifications are not available yet. This setting will appear when reminders are ready.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
             SettingSwitch(
                 title = "Reduce motion",
