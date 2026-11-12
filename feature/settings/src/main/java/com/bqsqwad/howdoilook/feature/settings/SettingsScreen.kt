@@ -1,5 +1,6 @@
 package com.bqsqwad.howdoilook.feature.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -95,6 +96,7 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { uriHandler.openUri("https://bqsqwadtechnologies.github.io/how-do-I-look-/privacy.html") }
                     .padding(vertical = 8.dp)
             )
             Text(
@@ -103,6 +105,7 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { uriHandler.openUri("https://bqsqwadtechnologies.github.io/how-do-I-look-/terms.html") }
                     .padding(vertical = 8.dp)
             )
             Spacer(Modifier.height(16.dp))
