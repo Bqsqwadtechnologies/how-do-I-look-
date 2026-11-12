@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,7 @@ fun HomeScreen(
     onRateLook: () -> Unit,
     onHistory: () -> Unit,
     onSettings: () -> Unit,
+    onStyleStudio: () -> Unit,
     onRatingClick: (LookRating) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -108,6 +110,10 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Check Photo Quality")
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedButton(onClick = onStyleStudio, modifier = Modifier.fillMaxWidth()) {
+                            Text("Open Style Studio · 20 tools")
                         }
                     }
                 }
