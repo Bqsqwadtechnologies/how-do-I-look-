@@ -171,7 +171,7 @@ private fun RecentCard(rating: LookRating, onClick: () -> Unit) {
                 Text(date, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(
-                "${rating.overallRounded}/10",
+                "Photo quality ${rating.overallRounded}/10",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
