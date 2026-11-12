@@ -53,7 +53,7 @@ These are additions beyond the currently described v1 feature set. They should b
 
 ## Current implementation status
 
-The 20 tools are now integrated into the Android app through **Style Studio**, reachable from the home screen. Each tool opens a dedicated prompt, saves its note locally on-device, displays saved notes, and supports deletion. The Private Data Dashboard tool exports notes through Android's share sheet or clears the local notebook.
+The 20 tools are now integrated into the Android app through **Style Studio**, reachable from the home screen. Each tool opens a dedicated prompt, saves its note locally on-device, displays saved notes, filters them by text, and supports deletion. The Private Data Dashboard tool exports notes through Android's share sheet or clears the local notebook.
 
 The Style Studio tools are:
 - Outfit calendar
