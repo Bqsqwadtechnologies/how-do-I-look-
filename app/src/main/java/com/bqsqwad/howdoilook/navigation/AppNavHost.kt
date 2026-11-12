@@ -3,13 +3,12 @@ package com.bqsqwad.howdoilook.navigation
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.bqsqwad.howdoilook.feature.history.HistoryScreen
 import com.bqsqwad.howdoilook.feature.history.HistoryViewModel
 import com.bqsqwad.howdoilook.feature.home.HomeScreen
@@ -53,8 +52,6 @@ fun AppNavHost() {
         }
 
         composable(Routes.CAMERA) {
-            // Share the same ViewModel scoped to the rating back-stack entry if possible;
-            // fallback: pop with URI via previous entry saved state.
             val parentEntry = remember(navController) {
                 navController.getBackStackEntry(Routes.RATING)
             }
@@ -86,9 +83,4 @@ fun AppNavHost() {
             )
         }
     }
-}
-
-@Composable
-private fun <T> remember(key: T, calculation: () -> androidx.navigation.NavBackStackEntry): androidx.navigation.NavBackStackEntry {
-    return androidx.compose.runtime.remember(key) { calculation() }
 }
