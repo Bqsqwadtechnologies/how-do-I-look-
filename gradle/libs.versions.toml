@@ -20,6 +20,7 @@ mlkitFace = "16.1.7"
 mlkitImageLabeling = "17.0.9"
 mlkitSelfie = "16.0.0-beta6"
 cameraX = "1.4.2"
+guava = "33.4.0-android"
 coil = "2.7.0"
 accompanist = "0.37.2"
 playServicesAds = "24.2.0"
@@ -70,6 +71,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 mlkit-face-detection = { group = "com.google.mlkit", name = "face-detection", version.ref = "mlkitFace" }
 mlkit-image-labeling = { group = "com.google.mlkit", name = "image-labeling", version.ref = "mlkitImageLabeling" }
 mlkit-selfie-segmentation = { group = "com.google.mlkit", name = "segmentation-selfie", version.ref = "mlkitSelfie" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraX" }
 androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraX" }
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }
