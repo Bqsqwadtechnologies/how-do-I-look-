@@ -53,4 +53,34 @@ These are additions beyond the currently described v1 feature set. They should b
 
 ## Current implementation status
 
+The 20 tools are now integrated into the Android app through **Style Studio**, reachable from the home screen. Each tool opens a dedicated prompt, saves its note locally on-device, displays saved notes, and supports deletion. The Private Data Dashboard tool exports notes through Android's share sheet or clears the local notebook.
+
+The Style Studio tools are:
+- Outfit calendar
+- Weather-aware outfit notes (manual weather entry; no live weather service)
+- Capsule wardrobe builder
+- Wardrobe gap finder
+- Outfit rotation tracker
+- Laundry and care reminders (saved task notes; no automatic task alarms)
+- Clothing care guide (save care-label questions/notes; no image OCR yet)
+- Packing checklist
+- Dress-code explainer (save event/dress-code notes; no external AI lookup)
+- Interview outfit checklist
+- Event outfit planner
+- Budget-aware wardrobe planner
+- Cost-per-wear tracker (manual cost/wear notes)
+- Color palette notebook
+- Contrast and accessibility checker (manual notes; no automatic color measurement yet)
+- Tailoring and repair notes
+- Closet inventory search (saved searchable notes are not yet full structured inventory)
+- Offline style boards
+- Private data dashboard
+- Camera and photo quality coach (photo checklist notes)
+
+Other integrated work: saved-result detail navigation, deterministic photo-quality analysis, legal-page links, an exact master-logo upload destination at `branding/how-do-i-look-logo.png`, a monochrome notification status glyph, notification channel setup, Android 13 notification permission declaration, and opt-in daily reminders scheduled with WorkManager.
+
+**Brand asset limitation:** the master logo file has not yet been committed to `branding/how-do-i-look-logo.png`; the existing vector launcher foreground remains temporary. Upload the original square PNG to that exact path, then generate Android adaptive and legacy mipmap assets using the instructions in `branding/README.md`. Android's notification small-icon slot must use a monochrome glyph, so notifications use `ic_stat_how_do_i_look.xml`; Android shows the app identity in notification details.
+
+**Verification limitation:** these changes are source-integrated, but they are not declared production-ready until the current GitHub Actions debug build succeeds and camera, notification permission, reminder scheduling, persistence, and navigation are exercised on physical Android devices.
+
 The saved-result detail navigation, deterministic photo-quality analysis, and legal-page links are integrated on `main`. The 20 additions above remain an implementation backlog; they are not represented as completed features.
