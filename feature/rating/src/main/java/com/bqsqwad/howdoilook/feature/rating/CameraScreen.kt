@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import java.io.File
 import java.text.SimpleDateFormat
@@ -189,7 +190,6 @@ fun CameraScreen(
                         }
                     )
 
-                    // Shutter button
                     IconButton(
                         onClick = {
                             if (isCapturing) return@IconButton
@@ -287,7 +287,15 @@ private fun takePhoto(
         executor,
         object : ImageCapture.OnImageSavedCallback {
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                val uri = outputFileResults.savedUri ?: Uri.fromFile(file)
+                val uri = try {
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        file
+                    )
+                } catch (_: Exception) {
+                    outputFileResults.savedUri ?: Uri.fromFile(file)
+                }
                 onSuccess(uri)
             }
 
