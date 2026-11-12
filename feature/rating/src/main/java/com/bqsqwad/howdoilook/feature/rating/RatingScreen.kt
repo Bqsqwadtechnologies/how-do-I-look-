@@ -48,7 +48,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier.Modifier
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -179,18 +179,12 @@ private fun ModeAndPickContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Button(
-                onClick = onCamera,
-                modifier = Modifier.weight(1f)
-            ) {
+            Button(onClick = onCamera, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Default.CameraAlt, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Camera")
             }
-            OutlinedButton(
-                onClick = onGallery,
-                modifier = Modifier.weight(1f)
-            ) {
+            OutlinedButton(onClick = onGallery, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Default.PhotoLibrary, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Gallery")
@@ -224,9 +218,7 @@ private fun ResultContent(
     onRetake: () -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = Modifier.fillMaxSize().padding(padding),
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -235,41 +227,22 @@ private fun ResultContent(
                 AsyncImage(
                     model = uri,
                     contentDescription = "Your look",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(3f / 4f)
-                        .clip(RoundedCornerShape(16.dp)),
+                    modifier = Modifier.fillMaxWidth().aspectRatio(3f / 4f).clip(RoundedCornerShape(16.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
         }
-
         item {
             Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "${rating.overallRounded}/10",
-                        style = MaterialTheme.typography.displayLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                    Text(
-                        rating.mode.displayName,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("${rating.overallRounded}/10", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text(rating.mode.displayName, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
             }
         }
-
         item {
             Text("Breakdown", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
@@ -278,25 +251,15 @@ private fun ResultContent(
                 Spacer(Modifier.height(8.dp))
             }
         }
-
         item {
             Text("Tips", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
             rating.tips.forEach { tip ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
-                    Text(
-                        text = tip,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(14.dp)
-                    )
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    Text(text = tip, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(14.dp))
                 }
             }
         }
-
         item {
             Text(
                 "For fun and style inspiration only \u2014 not a measure of your worth or attractiveness.",
@@ -306,20 +269,11 @@ private fun ResultContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Button(onClick = onSave, modifier = Modifier.weight(1f)) {
-                    Text("Save")
-                }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(onClick = onSave, modifier = Modifier.weight(1f)) { Text("Save") }
                 OutlinedButton(onClick = onFavorite) {
-                    Icon(
-                        if (rating.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite"
-                    )
+                    Icon(if (rating.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorite")
                 }
                 OutlinedButton(onClick = onRetake) {
                     Icon(Icons.Default.Refresh, contentDescription = "New photo")
@@ -332,23 +286,13 @@ private fun ResultContent(
 @Composable
 private fun SubScoreRow(name: String, score: Float) {
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(name, style = MaterialTheme.typography.bodyMedium)
-            Text(
-                String.format("%.1f", score),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            Text(String.format("%.1f", score), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         }
         LinearProgressIndicator(
             progress = { (score / 10f).coerceIn(0f, 1f) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
+            modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp))
         )
     }
 }
