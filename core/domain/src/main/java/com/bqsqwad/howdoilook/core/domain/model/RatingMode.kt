@@ -3,35 +3,35 @@ package com.bqsqwad.howdoilook.core.domain.model
 enum class RatingMode(val displayName: String, val categories: List<String>) {
     SELFIE(
         "Selfie",
-        listOf("Grooming", "Expression", "Lighting", "Framing", "Confidence")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     OUTFIT(
         "Outfit",
-        listOf("Color harmony", "Fit", "Style match", "Accessories", "Overall polish")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     HAIR(
         "Hair",
-        listOf("Style", "Condition", "Shape", "Color", "Finishing")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     MAKEUP(
         "Makeup",
-        listOf("Blend", "Color match", "Coverage", "Definition", "Finish")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     CASUAL(
         "Casual",
-        listOf("Comfort", "Color harmony", "Fit", "Vibe", "Photo quality")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     FORMAL(
         "Formal",
-        listOf("Sharpness", "Color match", "Fit", "Grooming", "Presence")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     DATE_NIGHT(
         "Date Night",
-        listOf("Appeal", "Color harmony", "Confidence", "Detail", "Atmosphere")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     ),
     INTERVIEW(
         "Interview",
-        listOf("Professionalism", "Grooming", "Fit", "Color", "Confidence")
+        listOf("Lighting", "Contrast", "Color balance", "Image detail", "Crop readiness")
     );
 
     companion object {
