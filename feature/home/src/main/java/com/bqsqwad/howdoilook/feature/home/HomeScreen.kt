@@ -82,7 +82,7 @@ fun HomeScreen(
             item {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = MaterialTheme.colorScheme.primary
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -91,14 +91,14 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            "Ready for a vibe check?",
+                            "Your photo, made clearer.",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "Get kind, useful style feedback in seconds. All analysis stays on your phone.",
+                            "Simple photo-quality guidance for lighting, color, detail and framing. Your photo stays on your device.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -107,7 +107,7 @@ fun HomeScreen(
                             onClick = onRateLook,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Rate My Look")
+                            Text("Check Photo Quality")
                         }
                     }
                 }
@@ -132,13 +132,13 @@ fun HomeScreen(
             }
 
             item {
-                Text("Recent looks", style = MaterialTheme.typography.titleMedium)
+                Text("Recent photo checks", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             }
 
             if (recent.isEmpty()) {
                 item {
                     Text(
-                        "No ratings yet. Tap Rate My Look to get started.",
+                        "No photo checks yet. Choose a photo to get started.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
