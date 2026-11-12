@@ -87,6 +87,7 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.timber)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
 
