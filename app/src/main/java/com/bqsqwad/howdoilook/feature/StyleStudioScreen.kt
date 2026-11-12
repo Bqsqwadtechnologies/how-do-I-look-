@@ -104,6 +104,7 @@ fun StyleStudioScreen(onBack: () -> Unit) {
     }
     var selectedTool by remember { mutableStateOf<StyleTool?>(null) }
     var draft by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
     var showDataInfo by remember { mutableStateOf(false) }
 
     fun persist() {
@@ -178,11 +179,26 @@ fun StyleStudioScreen(onBack: () -> Unit) {
             }
             item {
                 Text("Saved notes", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(6.dp))
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("Search saved notes") }
+                )
                 if (entries.isEmpty()) {
                     Text("Your saved plans and checklists will appear here.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-            items(entries.toList().asReversed(), key = { it.id }) { entry ->
+            items(
+                entries.filter {
+                    searchQuery.isBlank() ||
+                        it.tool.contains(searchQuery, ignoreCase = true) ||
+                        it.value.contains(searchQuery, ignoreCase = true)
+                }.asReversed(),
+                key = { it.id }
+            ) { entry ->
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column(Modifier.weight(1f)) {
