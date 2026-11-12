@@ -1,5 +1,9 @@
 package com.bqsqwad.howdoilook.feature.settings
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +31,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.bqsqwad.howdoilook.notifications.StyleReminderWorker
+import java.util.concurrent.TimeUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +50,17 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val reduceMotion by viewModel.reduceMotion.collectAsStateWithLifecycle()
+    val notifications by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val workManager = remember { WorkManager.getInstance(context) }
+    fun scheduleReminders() {
+        val request = PeriodicWorkRequestBuilder<StyleReminderWorker>(24, TimeUnit.HOURS).build()
+        workManager.enqueueUniquePeriodicWork("daily_style_reminder", ExistingPeriodicWorkPolicy.UPDATE, request)
+        viewModel.setNotifications(true)
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) scheduleReminders() else viewModel.setNotifications(false)
+    }
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
@@ -67,11 +90,22 @@ fun SettingsScreen(
             Text("Preferences", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                "Notifications are not available yet. This setting will appear when reminders are ready.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(vertical = 8.dp)
+            SettingSwitch(
+                title = "Daily style reminders",
+                subtitle = "Optional reminder to review outfit plans and clothing-care tasks",
+                checked = notifications,
+                onCheckedChange = { enabled ->
+                    if (!enabled) {
+                        workManager.cancelUniqueWork("daily_style_reminder")
+                        viewModel.setNotifications(false)
+                    } else if (Build.VERSION.SDK_INT >= 33 &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        scheduleReminders()
+                    }
+                }
             )
             SettingSwitch(
                 title = "Reduce motion",
