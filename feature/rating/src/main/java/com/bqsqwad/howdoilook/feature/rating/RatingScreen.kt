@@ -250,15 +250,18 @@ private fun ResultContent(
             }
         }
         item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f), RoundedCornerShape(24.dp)),
-                shape = RoundedCornerShape(24.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp))
+                    .background(Brush.linearGradient(listOf(Color(0xFF13C9FF), Color(0xFF147DEB), Color(0xFF123FAF))))
+                    .border(1.dp, Color.White.copy(alpha = 0.72f), RoundedCornerShape(28.dp))
+                    .padding(22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Photo quality ${rating.overallRounded}/10", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    Text(rating.mode.displayName, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                }
+                Text("YOUR PHOTO QUALITY CHECK", color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                Text("${rating.overallRounded}/10", color = Color.White, style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.ExtraBold)
+                Text(rating.mode.displayName, color = Color.White, style = MaterialTheme.typography.titleMedium)
+                Text("A photo-quality guide — not a judgement of you.", color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
             }
         }
         item {
