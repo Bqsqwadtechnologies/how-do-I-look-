@@ -5,7 +5,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -32,6 +37,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
@@ -84,73 +92,75 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(20.dp)
         ) {
-            Text("Preferences", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(12.dp))
-
-            SettingSwitch(
-                title = "Daily style reminders",
-                subtitle = "Optional. Off by default. Permission is requested only if you turn this on.",
-                checked = notifications,
-                onCheckedChange = { enabled ->
-                    if (!enabled) {
-                        viewModel.setNotifications(false)
-                    } else if (
-                        Build.VERSION.SDK_INT >= 33 &&
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    } else {
-                        viewModel.setNotifications(true)
-                    }
+            Column(
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp))
+                    .background(Brush.linearGradient(listOf(Color(0xFF13C8FF), Color(0xFF167CEB), Color(0xFF173FAE))))
+                    .border(1.dp, Color.White.copy(alpha = 0.7f), RoundedCornerShape(26.dp))
+                    .padding(20.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+            ) {
+                Text("YOUR EXPERIENCE", color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text("Settings & privacy", color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold)
+                Text("Make the app feel right for you. Your photo checks remain on your device.", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+            }
+            Spacer(Modifier.height(20.dp))
+            Text("Preferences", style = MaterialTheme.typography.titleLarge, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            Spacer(Modifier.height(10.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f), RoundedCornerShape(22.dp)),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    SettingSwitch(
+                        title = "Daily style reminders",
+                        subtitle = "Optional. Off by default. Permission is requested only if you turn this on.",
+                        checked = notifications,
+                        onCheckedChange = { enabled ->
+                            if (!enabled) viewModel.setNotifications(false)
+                            else if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else viewModel.setNotifications(true)
+                        }
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
+                    SettingSwitch(
+                        title = "Reduce motion",
+                        subtitle = "Minimize animations",
+                        checked = reduceMotion,
+                        onCheckedChange = viewModel::setReduceMotion
+                    )
                 }
-            )
-            SettingSwitch(
-                title = "Reduce motion",
-                subtitle = "Minimize animations",
-                checked = reduceMotion,
-                onCheckedChange = viewModel::setReduceMotion
-            )
-
-            Spacer(Modifier.height(24.dp))
-            HorizontalDivider()
-            Spacer(Modifier.height(24.dp))
-
-            Text("About", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(12.dp))
-            Text("How Do I Look? v1.0.0", style = MaterialTheme.typography.bodyMedium)
-            Text(
-                "BQ Sqwad Technologies",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Privacy Policy",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { uriHandler.openUri(PRIVACY_URL) }
-                    .padding(vertical = 8.dp)
-            )
-            Text(
-                "Contact / support",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { uriHandler.openUri("mailto:bqsqwadtechnologies@bqsqwadai.com") }
-                    .padding(vertical = 8.dp)
-            )
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "All photo analysis happens on-device. We do not upload your photos unless you explicitly share a result card.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            }
+            Spacer(Modifier.height(22.dp))
+            Text("About & support", style = MaterialTheme.typography.titleLarge, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            Spacer(Modifier.height(10.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f), RoundedCornerShape(22.dp)),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(Modifier.padding(18.dp)) {
+                    Text("How Do I Look? v1.0.0", style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Text("BQ Sqwad Technologies", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(12.dp))
+                    Text("Privacy Policy", color = MaterialTheme.colorScheme.primary, modifier = Modifier.fillMaxWidth().clickable { uriHandler.openUri(PRIVACY_URL) }.padding(vertical = 9.dp))
+                    Text("Contact / support", color = MaterialTheme.colorScheme.primary, modifier = Modifier.fillMaxWidth().clickable { uriHandler.openUri("mailto:bqsqwadtechnologies@bqsqwadai.com") }.padding(vertical = 9.dp))
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f), RoundedCornerShape(20.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Text(
+                    "All photo analysis happens on-device. We do not upload your photos unless you explicitly share a result card.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }
