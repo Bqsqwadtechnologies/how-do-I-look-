@@ -1,5 +1,7 @@
 package com.bqsqwad.howdoilook.feature.history
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +44,7 @@ fun RatingDetailScreen(
     val rating by viewModel.rating.collectAsStateWithLifecycle()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Rating details") },
@@ -51,9 +54,9 @@ fun RatingDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -113,7 +116,7 @@ private fun RatingDetailContent(rating: LookRating, padding: PaddingValues) {
         }
         item { Text("Helpful photo tips", style = MaterialTheme.typography.titleMedium) }
         items(rating.tips.size) { index ->
-            Card(modifier = Modifier.fillMaxWidth()) {
+            Card(modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.22f), RoundedCornerShape(18.dp)), shape = RoundedCornerShape(18.dp)) {
                 Text(rating.tips[index], modifier = Modifier.padding(14.dp))
             }
         }
