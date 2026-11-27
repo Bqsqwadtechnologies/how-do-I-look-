@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -77,6 +80,7 @@ fun RatingScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Rate My Look") },
@@ -157,7 +161,19 @@ private fun ModeAndPickContent(
             .verticalScroll(rememberScrollState())
             .padding(20.dp)
     ) {
-        Text("Choose a mode", style = MaterialTheme.typography.titleMedium)
+        Column(
+            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp))
+                .background(Brush.linearGradient(listOf(Color(0xFF11C9FF), Color(0xFF147CEB), Color(0xFF153DAF))))
+                .border(1.dp, Color.White.copy(alpha = 0.72f), RoundedCornerShape(26.dp))
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("YOUR PHOTO, YOUR CONTROL", color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+            Text("Let's check your photo", color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
+            Text("Choose a photo and a check mode. Analysis runs privately on your device.", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+        }
+        Spacer(Modifier.height(20.dp))
+        Text("Choose a check mode", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -172,20 +188,20 @@ private fun ModeAndPickContent(
             }
         }
 
-        Spacer(Modifier.height(28.dp))
-        Text("Add a photo", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(24.dp))
+        Text("Add your photo", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Button(onClick = onCamera, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(16.dp)) {
+            Button(onClick = onCamera, modifier = Modifier.weight(1f).height(58.dp), shape = RoundedCornerShape(19.dp)) {
                 Icon(Icons.Default.CameraAlt, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Camera")
             }
-            OutlinedButton(onClick = onGallery, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(16.dp)) {
+            OutlinedButton(onClick = onGallery, modifier = Modifier.weight(1f).height(58.dp), shape = RoundedCornerShape(19.dp)) {
                 Icon(Icons.Default.PhotoLibrary, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Gallery")
@@ -257,7 +273,7 @@ private fun ResultContent(
             Text("Tips", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
             rating.tips.forEach { tip ->
-                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), shape = RoundedCornerShape(18.dp)) {
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f), RoundedCornerShape(18.dp)), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                     Text(text = tip, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(14.dp))
                 }
             }
@@ -273,7 +289,7 @@ private fun ResultContent(
         }
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = onSave, modifier = Modifier.weight(1f)) { Text("Save") }
+                Button(onClick = onSave, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(17.dp)) { Text("Save result") }
                 OutlinedButton(onClick = onFavorite) {
                     Icon(if (rating.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorite")
                 }
