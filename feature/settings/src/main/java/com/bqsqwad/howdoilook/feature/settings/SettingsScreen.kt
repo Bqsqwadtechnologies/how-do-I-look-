@@ -29,7 +29,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,16 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.bqsqwad.howdoilook.notifications.StyleReminderWorker
-import java.util.concurrent.TimeUnit
 
 private const val PRIVACY_URL =
     "https://bqsqwadtechnologies.github.io/privacy-policy-/how-do-i-look.html"
-private const val TERMS_URL =
-    "https://bqsqwadtechnologies.github.io/privacy-policy-/how-do-i-look.html#contact"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,22 +50,13 @@ fun SettingsScreen(
     val reduceMotion by viewModel.reduceMotion.collectAsStateWithLifecycle()
     val notifications by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val workManager = remember { WorkManager.getInstance(context) }
-    fun scheduleReminders() {
-        val request = PeriodicWorkRequestBuilder<StyleReminderWorker>(24, TimeUnit.HOURS).build()
-        workManager.enqueueUniquePeriodicWork(
-            "daily_style_reminder",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            request
-        )
-        viewModel.setNotifications(true)
-    }
+    val uriHandler = LocalUriHandler.current
+
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) scheduleReminders() else viewModel.setNotifications(false)
+        viewModel.setNotifications(granted)
     }
-    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         topBar = {
@@ -104,11 +87,10 @@ fun SettingsScreen(
 
             SettingSwitch(
                 title = "Daily style reminders",
-                subtitle = "Optional reminder. Notifications stay off until you enable them.",
+                subtitle = "Optional. Off by default. Permission is requested only if you turn this on.",
                 checked = notifications,
                 onCheckedChange = { enabled ->
                     if (!enabled) {
-                        workManager.cancelUniqueWork("daily_style_reminder")
                         viewModel.setNotifications(false)
                     } else if (
                         Build.VERSION.SDK_INT >= 33 &&
@@ -119,7 +101,7 @@ fun SettingsScreen(
                     ) {
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     } else {
-                        scheduleReminders()
+                        viewModel.setNotifications(true)
                     }
                 }
             )

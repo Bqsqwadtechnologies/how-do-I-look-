@@ -8,8 +8,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +36,7 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 object Routes {
@@ -64,19 +67,24 @@ fun AppNavHost() {
             PrefsEntryPoint::class.java
         ).userPreferences()
     }
-    val ageConfirmed by prefs.ageConfirmed.collectAsStateWithLifecycle(initialValue = null)
+    var ageReady by remember { mutableStateOf(false) }
+    var ageConfirmed by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
-    // Avoid flashing home before age gate resolves
-    if (ageConfirmed == null) {
+    LaunchedEffect(Unit) {
+        ageConfirmed = prefs.ageConfirmed.first()
+        ageReady = true
+    }
+
+    if (!ageReady) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
     }
 
-    val start = if (ageConfirmed == true) Routes.HOME else Routes.AGE_GATE
+    val start = if (ageConfirmed) Routes.HOME else Routes.AGE_GATE
 
     NavHost(
         navController = navController,
@@ -88,14 +96,13 @@ fun AppNavHost() {
                 onConfirm13OrOlder = {
                     scope.launch {
                         prefs.setAgeConfirmed(true)
+                        ageConfirmed = true
                         navController.navigate(Routes.HOME) {
                             popUpTo(Routes.AGE_GATE) { inclusive = true }
                         }
                     }
                 },
-                onUnder13 = {
-                    activity?.finish()
-                }
+                onUnder13 = { activity?.finish() }
             )
         }
 
@@ -123,7 +130,6 @@ fun AppNavHost() {
                 navController.getBackStackEntry(Routes.RATING)
             }
             val ratingVm: RatingViewModel = hiltViewModel(parentEntry)
-
             CameraScreen(
                 onBack = { navController.popBackStack() },
                 onPhotoCaptured = { uri: Uri ->
@@ -153,9 +159,7 @@ fun AppNavHost() {
         }
 
         composable(Routes.SETTINGS) {
-            SettingsScreen(
-                onBack = { navController.popBackStack() }
-            )
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Routes.STYLE_STUDIO) {
