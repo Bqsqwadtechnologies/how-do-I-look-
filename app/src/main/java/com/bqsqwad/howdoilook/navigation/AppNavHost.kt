@@ -3,8 +3,18 @@ package com.bqsqwad.howdoilook.navigation
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Checkroom
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -86,8 +97,48 @@ fun AppNavHost() {
 
     val start = if (ageConfirmed) Routes.HOME else Routes.AGE_GATE
 
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+    val showBottomBar = currentRoute in setOf(Routes.HOME, Routes.STYLE_STUDIO, Routes.HISTORY, Routes.SETTINGS)
+
+    androidx.compose.material3.Scaffold(
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        bottomBar = {
+            if (showBottomBar) {
+                NavigationBar(
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                ) {
+                    val destinations = listOf(
+                        Triple(Routes.HOME, "Home", Icons.Default.Home),
+                        Triple(Routes.STYLE_STUDIO, "Studio", Icons.Default.Checkroom),
+                        Triple(Routes.HISTORY, "History", Icons.Default.History),
+                        Triple(Routes.SETTINGS, "Profile", Icons.Default.Person)
+                    )
+                    destinations.forEach { (route, label, icon) ->
+                        NavigationBarItem(
+                            selected = currentRoute == route,
+                            onClick = {
+                                if (currentRoute != route) {
+                                    navController.navigate(route) {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                        popUpTo(Routes.HOME) { saveState = true }
+                                    }
+                                }
+                            },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) },
+                            alwaysShowLabel = true
+                        )
+                    }
+                }
+            }
+        }
+    ) { rootPadding ->
     NavHost(
         navController = navController,
+        modifier = Modifier.padding(rootPadding),
         startDestination = start
     ) {
         composable(Routes.AGE_GATE) {
@@ -165,5 +216,6 @@ fun AppNavHost() {
         composable(Routes.STYLE_STUDIO) {
             StyleStudioScreen(onBack = { navController.popBackStack() })
         }
+    }
     }
 }
