@@ -1,6 +1,7 @@
 package com.bqsqwad.howdoilook.feature.settings
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,18 +32,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import android.content.pm.PackageManager
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.bqsqwad.howdoilook.feature.settings.StyleReminderWorker
+import com.bqsqwad.howdoilook.notifications.StyleReminderWorker
 import java.util.concurrent.TimeUnit
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+private const val PRIVACY_URL =
+    "https://bqsqwadtechnologies.github.io/privacy-policy-/how-do-i-look.html"
+private const val TERMS_URL =
+    "https://bqsqwadtechnologies.github.io/privacy-policy-/how-do-i-look.html#contact"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,10 +61,16 @@ fun SettingsScreen(
     val workManager = remember { WorkManager.getInstance(context) }
     fun scheduleReminders() {
         val request = PeriodicWorkRequestBuilder<StyleReminderWorker>(24, TimeUnit.HOURS).build()
-        workManager.enqueueUniquePeriodicWork("daily_style_reminder", ExistingPeriodicWorkPolicy.UPDATE, request)
+        workManager.enqueueUniquePeriodicWork(
+            "daily_style_reminder",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            request
+        )
         viewModel.setNotifications(true)
     }
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
         if (granted) scheduleReminders() else viewModel.setNotifications(false)
     }
     val uriHandler = LocalUriHandler.current
@@ -93,14 +104,18 @@ fun SettingsScreen(
 
             SettingSwitch(
                 title = "Daily style reminders",
-                subtitle = "Optional reminder to review outfit plans and clothing-care tasks",
+                subtitle = "Optional reminder. Notifications stay off until you enable them.",
                 checked = notifications,
                 onCheckedChange = { enabled ->
                     if (!enabled) {
                         workManager.cancelUniqueWork("daily_style_reminder")
                         viewModel.setNotifications(false)
-                    } else if (Build.VERSION.SDK_INT >= 33 &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    } else if (
+                        Build.VERSION.SDK_INT >= 33 &&
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     } else {
@@ -122,7 +137,11 @@ fun SettingsScreen(
             Text("About", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(12.dp))
             Text("How Do I Look? v1.0.0", style = MaterialTheme.typography.bodyMedium)
-            Text("BQ Sqwad Technologies", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                "BQ Sqwad Technologies",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Spacer(Modifier.height(16.dp))
             Text(
                 "Privacy Policy",
@@ -130,16 +149,16 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { uriHandler.openUri("https://bqsqwadtechnologies.github.io/how-do-I-look-/privacy.html") }
+                    .clickable { uriHandler.openUri(PRIVACY_URL) }
                     .padding(vertical = 8.dp)
             )
             Text(
-                "Terms of Service",
+                "Contact / support",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { uriHandler.openUri("https://bqsqwadtechnologies.github.io/how-do-I-look-/terms.html") }
+                    .clickable { uriHandler.openUri("mailto:bqsqwadtechnologies@bqsqwadai.com") }
                     .padding(vertical = 8.dp)
             )
             Spacer(Modifier.height(16.dp))
@@ -167,7 +186,11 @@ private fun SettingSwitch(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyLarge)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
