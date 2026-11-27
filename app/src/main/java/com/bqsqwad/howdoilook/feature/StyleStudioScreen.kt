@@ -1,6 +1,9 @@
 package com.bqsqwad.howdoilook.feature
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +43,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -83,7 +89,7 @@ private val styleTools = listOf(
     StyleTool("Camera and photo quality coach", "Keep a checklist for clearer, more useful photos.", "What should you check before taking a photo? Consider light, focus, background and framing.", "Photo checklist")
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun StyleStudioScreen(onBack: () -> Unit) {
     val context = LocalContext.current
@@ -109,6 +115,7 @@ fun StyleStudioScreen(onBack: () -> Unit) {
     var draft by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
     var showDataInfo by remember { mutableStateOf(false) }
+    val filteredTools = styleTools.filter { searchQuery.isBlank() || it.title.contains(searchQuery, true) || it.description.contains(searchQuery, true) }
 
     fun persist() {
         val array = JSONArray()
@@ -120,6 +127,7 @@ fun StyleStudioScreen(onBack: () -> Unit) {
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Style Studio") },
@@ -134,10 +142,10 @@ fun StyleStudioScreen(onBack: () -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary,
+                    actionIconContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -148,56 +156,77 @@ fun StyleStudioScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item {
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                    Column(Modifier.padding(18.dp)) {
-                        Text("A more useful wardrobe, one small plan at a time", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        Spacer(Modifier.height(6.dp))
-                        Text("20 practical tools for planning outfits, caring for clothes and taking clearer photos. Notes stay on this device.", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
-            item {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Your tools", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text("${styleTools.size} tools", color = MaterialTheme.colorScheme.primary)
-                }
-            }
-            items(styleTools, key = { it.title }) { tool ->
-                Card(
-                    onClick = {
-                        selectedTool = tool
-                        draft = ""
-                    },
-                    modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f), RoundedCornerShape(20.dp)),
-                    shape = RoundedCornerShape(20.dp)
+                Column(
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp))
+                        .background(Brush.linearGradient(listOf(Color(0xFF13C9FF), Color(0xFF168BFF), Color(0xFF123FBF))))
+                        .border(1.dp, Color.White.copy(alpha = 0.7f), RoundedCornerShape(28.dp))
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Row(Modifier.fillMaxWidth().padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column(Modifier.weight(1f)) {
-                            Text(tool.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-                            Spacer(Modifier.height(3.dp))
-                            Text(tool.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        Icon(Icons.Default.Add, contentDescription = "Open ${tool.title}", tint = MaterialTheme.colorScheme.primary)
-                    }
+                    Text("✦ YOUR PERSONAL STYLE SPACE", color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                    Text("Style Studio", color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+                    Text("Plan outfits, organize your wardrobe and build practical style routines — all in one private space.", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                    Text("20 tools · Saved on this device", color = Color.White, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 }
             }
             item {
-                Text("Saved notes", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(6.dp))
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    shape = RoundedCornerShape(18.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        focusedBorderColor = Color(0xFF16B9F2),
                         unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface
                     ),
-                    placeholder = { Text("Search saved notes") }
+                    placeholder = { Text("Find a style tool...") }
                 )
+            }
+            item {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Explore your tools", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("${filteredTools.size} / 20", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                }
+            }
+            item {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    filteredTools.forEach { tool ->
+                        Card(
+                            onClick = { selectedTool = tool; draft = "" },
+                            modifier = Modifier.fillMaxWidth(0.485f).height(142.dp)
+                                .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.34f), RoundedCornerShape(22.dp)),
+                            shape = RoundedCornerShape(22.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Column(Modifier.fillMaxSize().padding(13.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                                androidx.compose.material3.Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(14.dp)) {
+                                    Icon(Icons.Default.Checkroom, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(9.dp))
+                                }
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(tool.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2)
+                                    Text(tool.description, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                                }
+                            }
+                        }
+                    }
+                }
+                if (filteredTools.isEmpty()) {
+                    Text("No tools match that search. Try another word.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            item {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Your saved notes", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("${entries.size} saved", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                }
                 if (entries.isEmpty()) {
                     Text("Your saved plans and checklists will appear here.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -210,7 +239,7 @@ fun StyleStudioScreen(onBack: () -> Unit) {
                 }.asReversed(),
                 key = { it.id }
             ) { entry ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f), RoundedCornerShape(20.dp)), shape = RoundedCornerShape(20.dp)) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                         Column(Modifier.weight(1f)) {
                             Text(entry.tool, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -232,6 +261,7 @@ fun StyleStudioScreen(onBack: () -> Unit) {
         AlertDialog(
             onDismissRequest = { selectedTool = null },
             title = { Text(tool.title) },
+            shape = RoundedCornerShape(28.dp),
             text = {
                 Column {
                     Text(tool.prompt, style = MaterialTheme.typography.bodyMedium)
