@@ -14,6 +14,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cameraswitch
@@ -47,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -127,10 +130,10 @@ fun CameraScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black,
+                    containerColor = Color(0xFF071A3B),
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
+                    actionIconContentColor = Color(0xFF48D5FF)
                 )
             )
         }
@@ -139,7 +142,7 @@ fun CameraScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.Black)
+                .background(Brush.verticalGradient(listOf(Color(0xFF06132B), Color.Black, Color(0xFF061A3C))))
         ) {
             when {
                 !hasPermission -> {
@@ -190,6 +193,30 @@ fun CameraScreen(
                         }
                     )
 
+                    Column(
+                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 22.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "POSITION YOUR PHOTO",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Keep your face and outfit in frame",
+                            color = Color.White.copy(alpha = 0.78f),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.align(Alignment.Center)
+                            .fillMaxWidth().padding(horizontal = 34.dp)
+                            .height(390.dp)
+                            .border(2.dp, Color(0xFF42D8FF).copy(alpha = 0.88f), RoundedCornerShape(34.dp))
+                    )
+
                     IconButton(
                         onClick = {
                             if (isCapturing) return@IconButton
@@ -211,14 +238,15 @@ fun CameraScreen(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(bottom = 40.dp)
-                            .size(80.dp)
-                            .background(Color.White, CircleShape)
+                            .size(84.dp)
+                            .background(Brush.linearGradient(listOf(Color(0xFF53E1FF), Color.White, Color(0xFFB7EFFF))), CircleShape)
+                            .border(4.dp, Color(0xFF1599F2), CircleShape)
                     ) {
                         Icon(
                             Icons.Default.PhotoCamera,
                             contentDescription = "Capture",
                             modifier = Modifier.size(36.dp),
-                            tint = Color.Black
+                            tint = Color(0xFF0757D8)
                         )
                     }
 
