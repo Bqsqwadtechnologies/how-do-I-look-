@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -85,9 +86,9 @@ fun RatingScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -179,12 +180,12 @@ private fun ModeAndPickContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Button(onClick = onCamera, modifier = Modifier.weight(1f)) {
+            Button(onClick = onCamera, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(16.dp)) {
                 Icon(Icons.Default.CameraAlt, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Camera")
             }
-            OutlinedButton(onClick = onGallery, modifier = Modifier.weight(1f)) {
+            OutlinedButton(onClick = onGallery, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(16.dp)) {
                 Icon(Icons.Default.PhotoLibrary, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Gallery")
@@ -235,7 +236,8 @@ private fun ResultContent(
         item {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f), RoundedCornerShape(24.dp)),
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Photo quality ${rating.overallRounded}/10", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
@@ -255,7 +257,7 @@ private fun ResultContent(
             Text("Tips", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
             rating.tips.forEach { tip ->
-                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), shape = RoundedCornerShape(18.dp)) {
                     Text(text = tip, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(14.dp))
                 }
             }
