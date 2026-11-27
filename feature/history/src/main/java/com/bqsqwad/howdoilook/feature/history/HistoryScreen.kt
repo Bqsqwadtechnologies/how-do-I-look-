@@ -1,5 +1,7 @@
 package com.bqsqwad.howdoilook.feature.history
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,6 +45,7 @@ fun HistoryScreen(
     nativeAdSlot: @Composable (index: Int) -> Unit = {}
 ) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("History") },
@@ -52,9 +55,9 @@ fun HistoryScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -65,7 +68,7 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("No ratings yet", style = MaterialTheme.typography.titleMedium)
+                Text("No photo checks yet", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Rate a look and it will show up here.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -77,7 +80,11 @@ fun HistoryScreen(
             ) {
                 itemsIndexed(ratings, key = { _, r -> r.id }) { index, rating ->
                     val date = SimpleDateFormat("MMM d, yyyy · HH:mm", Locale.getDefault()).format(Date(rating.createdAt))
-                    Card(onClick = { onRatingClick(rating) }, modifier = Modifier.fillMaxWidth()) {
+                    Card(
+                        onClick = { onRatingClick(rating) },
+                        modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f), RoundedCornerShape(20.dp)),
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
                         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(rating.mode.displayName, style = MaterialTheme.typography.titleSmall)
